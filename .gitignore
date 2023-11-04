@@ -1,0 +1,14 @@
+/bin
+/lib
+
+.vscode
+
+*Test.txt
+*Test.xml
+
+test/bin
+
+test/reports
+.fake
+
+.DS_Store
