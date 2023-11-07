@@ -1,4 +1,4 @@
-<project name="HW01 Car" basedir="." default="run">
+<project name="Car" basedir="." default="run">
     <property environment="env"/>
 
     <property name="src" location="src"/>

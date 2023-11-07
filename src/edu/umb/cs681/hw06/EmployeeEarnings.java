@@ -11,6 +11,9 @@ public class EmployeeEarnings {
     private String name, department_name, title;
     private Double regular,retro, other, overtime, injured, detail, quinn_education, total_gross, postal;
   
+    private static double avgTotalGrossValue;
+    private static double totalEarnings;
+
     public EmployeeEarnings(String name, String department_name, String title, Double regular, Double retro, Double other, Double overtime, Double injured, Double detail, Double quinn_education, Double total_gross, Double postal) {
               this.name = name;
               this.department_name = department_name;
@@ -25,11 +28,8 @@ public class EmployeeEarnings {
               this.total_gross = total_gross;
               this.postal = postal;
               }
-  
-  public EmployeeEarnings() {
-  }
-  
-  // Getter and Setter methods
+
+  // Getter methods
   public String getName() {
   return name;
   }
@@ -80,78 +80,90 @@ public class EmployeeEarnings {
 
     public static void main(String[] args) throws IOException {
         Path path = Paths.get("data/EarningsReport.csv");
-
+        
         try (Stream<String> lines = Files.lines(path)) {
-            // Parse CSV and store data as List<List<String>>
+
+            // Parse CSV file
             List<List<String>> dataset = 
                 lines.map(line ->
                     Stream.of(line.split(","))
-                            .map(value -> value.replaceAll("\"", "").trim()) // Strips commas and double quotations
+                            .map(value -> value.replaceAll("\"", "").trim()) 
                             .collect(Collectors.toList()))
                     .collect(Collectors.toList());
 
-        // Create runnable instances for each type of processing
-        Thread thread1 = new Thread(() -> {
-            int mapColumnIndex = 0; // Replace with the index of the column you want to map
-                List<String> mappedData = dataset.stream()
-                        .map(row -> {
-                            try {
-                                return row.get(mapColumnIndex);
-                            } catch (IndexOutOfBoundsException e) {
-                                // Handle incorrect or missing data gracefully
-                                return "N/A";
-                            }
-                        })
-                        .collect(Collectors.toList());
-
-        System.out.println("\nMapped Data:");
+        // Data Processing 1 : Mapping the Data
+        Runnable mappingTask = () -> {
+            int mapColumnIndex = 0;     // Index of Column 'NAME'
+            List<String> mappedData = dataset.stream()
+                    .map(row -> {
+                        try {
+                            return row.get(mapColumnIndex);
+                        } catch (IndexOutOfBoundsException e) {
+                            return "N/A";
+                        }
+                    })
+                    .collect(Collectors.toList());
+        
         mappedData.forEach(System.out::println);
-        });
+        };
 
-        Thread thread2 = new Thread(() -> {
-            int earningsColumnIndex = 4; 
-                double totalEarnings = dataset.stream()
-                        .mapToDouble(row -> {
-                            try {
-                                return Double.parseDouble(row.get(earningsColumnIndex).replaceAll(",", ""));
-                            } catch (NumberFormatException | IndexOutOfBoundsException e) {
-                                return 0.0;
-                            }
-                        })
-                            .sum();
-        System.out.println("\nTotal Earnings: " + totalEarnings); 
-        });
+        Thread thread1 = new Thread(mappingTask);
 
-        Thread thread3 = new Thread(() -> {
-            int averageindex = 11; // Index of the total gross column
-                double totalGrossSum = dataset.stream()
-                        .mapToDouble(row -> {
-                            try {
-                                String totalGrossStr = row.get(averageindex).replaceAll(",", ""); 
-                                return Double.parseDouble(totalGrossStr);
-                            } catch (NumberFormatException | IndexOutOfBoundsException e) {
-                                // Handle incorrect or missing data gracefully
-                                return 0;
-                            }
-                        })
-                        .sum();
+        // Data Processing 2 : Sum of Regular Earnings 
+        Runnable totalEarningsStream = () -> {
+            int earningsColumnIndex = 3;    // Index of Columnc 'REGULAR'
+            totalEarnings = dataset.stream()
+                    .mapToDouble(row -> {
+                        try {
+                            return Double.parseDouble(row.get(earningsColumnIndex).replaceAll(",", ""));
+                        } catch (NumberFormatException | IndexOutOfBoundsException e) {
+                            return 0.0;
+                        }
+                    })
+                    .sum();
+        };
+
+        Thread thread2 = new Thread(totalEarningsStream);
+
+        // Avg of Total Gross Earnings
+        Runnable avgTotalGross = () -> {
+            int averageindex = 10;          // Index of column 'TOTAL_GROSS'
+            double totalGrossSum = dataset.stream()
+                    .mapToDouble(row -> {
+                        try {
+                            String totalGrossStr = row.get(averageindex).replaceAll(",", "");
+                            return Double.parseDouble(totalGrossStr);
+                        } catch (NumberFormatException | IndexOutOfBoundsException e) {
+                            return 0;
+                        }
+                    })
+                    .sum();
+
+            int numberOfEmployees = dataset.size();
+            avgTotalGrossValue = numberOfEmployees > 0 ? totalGrossSum / numberOfEmployees : 0;
+            System.out.printf("\nTotal Gross Sum of all Employees: %.2f%n",totalGrossSum);
+        };
+
+        Thread thread3 = new Thread(avgTotalGross);
         
-        
-        int numberOfEmployees = dataset.size();
-        double averageTotalGross = numberOfEmployees > 0 ? totalGrossSum / numberOfEmployees : 0;
-        System.out.println("Average Total Gross Earnings: $" + averageTotalGross);
-        });
-
         // Start threads
         thread1.start();
         thread2.start();
         thread3.start();
 
         // Join threads and collect results
-        
         thread1.join();
         thread2.join();
         thread3.join();
+
+        
+        System.out.printf("\nMapped Data of Column 'NAME'\n", mappingTask);
+
+        System.out.print("\n************Data Processing 2**************\n");
+        System.out.printf("\nSum of Regular Earnings of all Employees: %.2f\n", totalEarnings);
+
+        System.out.print("\n************Data Processing 3**************\n");
+        System.out.println("\nAverage of Total Gross Earnings of all Employees: $" + avgTotalGrossValue);
 } 
     catch (InterruptedException e) {
             e.printStackTrace();
