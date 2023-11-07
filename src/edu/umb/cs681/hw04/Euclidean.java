@@ -9,7 +9,8 @@ public class Euclidean implements DistanceMetric{
 		double euclideanDistance =
 			IntStream
 				.range(0, p1.size())
-				.mapToDouble(i -> p1.get(i)-p2.get(i)) .map(n -> n*n)
+				.mapToDouble(i -> p1.get(i)-p2.get(i)) 
+				.map(n -> n*n)
 				.sum();
 
 		return Math.sqrt(euclideanDistance); 

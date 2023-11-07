@@ -4,7 +4,7 @@
 
       on a shell.
 -->
-<project name="Inspection with Threads" basedir="."  default="clean" xmlns:ivy="antlib:org.apache.ivy.ant">
+<project name="Employee Earnings Report 2022 with Threads" basedir="."  default="clean" xmlns:ivy="antlib:org.apache.ivy.ant">
     <property name="src" location="src" />
     <property name="bin" location="bin" />
     <property name="test.src" location="test/src" />
@@ -34,7 +34,7 @@
 
 
     <target name="run" depends="compile">
-        <java classname="edu.umb.cs681.hw06.Inspection"
+        <java classname="edu.umb.cs681.hw06.EmployeeEarnings"
               classpathref="classpath"
               fork="true"/>
     </target>

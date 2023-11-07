@@ -1,139 +1,93 @@
 package edu.umb.cs681.hw02;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.time.Period;
 import java.util.stream.Collectors;
+
 
 public class Main {
 
-public static void main(String[] args) {
+    public static void main(String[] args) {
 
+        LinkedList<Person> peopleList = generateRandomPeople(1500);
 
-//   // Generate 1000+ random Person instances
-//   List<Person> people = generateRandomPeople(numPeople);
+        System.out.println("Total Count of Randomly Genrated People: 1500\n");
+    
+        long fullyVacCount = peopleList.stream()
+                                    .filter(p ->
+                                            p.getAge() >= 18 && 
+                                            p.getVacCount() >= 3)
+                                    .count();
 
-//   // Vaccination rate for each age category
-//   Map<AgeCat, Double> vacRatesByAge = people.stream()
-//     .collect(Collectors.groupingBy(Person::getAgeCat, 
-//         Collectors.summingDouble(p -> p.getVacCount()/people.size()*100)));
+        float vacRate = (float) fullyVacCount / peopleList.size() * 100;
+        System.out.println("Fully Vaccinated People rate aged 18 or above: " + vacRate + "%\n");
 
-//   // Avg vac count for each age category
-//   Map<AgeCat, Double> avgVacByAge = people.stream()
-//     .collect(Collectors.groupingBy(Person::getAgeCat,
-//         Collectors.averagingDouble(Person::getVacCount)));
+        Map<AgeCat, Double> vacRateByAgeCat = CheckVaccinationRateByAgeCategory(peopleList);
+        System.out.println("Vaccination Rate(Fully Vaccinated People) by Age Category: \n" + vacRateByAgeCat + "\n");
 
-//   // Avg age of unvaccinated
-//   Map<Boolean, Double> vaxPartition = people.stream()
-//     .collect(Collectors.partitioningBy(p -> p.getVacCount() > 0,
-//         Collectors.averagingDouble(Person::getAge)));
+        Map<AgeCat, Double> AvgVacInEachAgeCat = CheckAvgVaccinationInEachAgeCategory(peopleList);
+        System.out.println("Average vaccinations administered in each age category: \n" + AvgVacInEachAgeCat + "\n");
 
-//   double avgUnvacAge = vaxPartition.get(false);
-
-//   // Print output
-//   System.out.println("Vaccination Rates:");
-//   vacRatesByAge.forEach((k, v) -> System.out.println(k + ": " + v));
-  
-//   System.out.println("\nAvg Vacs:");
-//   avgVacByAge.forEach((k, v) -> System.out.println(k + ": " + v));  
-
-//   System.out.println("\nAvg age unvaccinated: " + avgUnvacAge);
-
-// }
-
-// Method to generate random Person instances
-// public static List<Person> generateRandomPeople(int numPeople) {
-  
-//   List<Person> people = new ArrayList<>();
-//   for (int i = 0; i < numPeople; i++) {
-//         List<Double> point = new ArrayList<>();
-//       // Logic to generate random Person instances
-//       people.add((Person) point);
-//     }
-//   return people; 
-//   } 
-
-        LinkedList<Person> people = generateRandomPeople(1500);
-
-        // Calculate vaccination rate for each age category
-        Map<Person.AgeCat, Double> vaccinationRateByAgeCategory = people.stream()
-                .collect(Collectors.groupingBy(
-                        p -> getAgeCat(p.getAge()),
-                    Collectors.averagingDouble(p -> p.getDoses().size())));
-
-        System.out.println("Vaccination Rate by Age Category:");
-        
-        vaccinationRateByAgeCategory.forEach((AgeCat, avgDoseCount) ->
-                System.out.println(AgeCat + ": " + avgDoseCount));
-
-        // Calculate the average number of vaccinations administered in each age category
-        // (already calculated in vaccinationRateByAgeCategory)
-
-        // Calculate the average age of people who have never been vaccinated
-        // double avgAgeOfUnvaccinated = people.stream()
-        //         .filter(p -> p.getDoses().isEmpty())
-        //         .collect(Collectors.averagingInt(Person::getAge));
-
-        // System.out.println("Average Age of Unvaccinated People: " + avgAgeOfUnvaccinated);
+        double AvgAgeOfUnVaccinated = CheckAvgAgeOfUnvaccinatedPeople(peopleList);
+        System.out.println("Average age of the people who have never been vaccinated: " + AvgAgeOfUnVaccinated + " yr\n");
     }
 
-    // private static LinkedList<Person> generateRandomPeople(int count) {
-    //     LinkedList<Person> people = new LinkedList<>();
-    //     Random random = new Random();
+    public static Map<AgeCat, Double> CheckVaccinationRateByAgeCategory(LinkedList<Person> peopleList) {
+        Map<AgeCat, Double> vacRateByAgeCat = 
+                peopleList.stream()
+                    .collect(Collectors.groupingBy(
+                                Person::getAgeCat, 
+                                Collectors.averagingDouble(p -> 
+                                    p.getVacCount() >= 3 ? 1 : 0)));
+        return vacRateByAgeCat;
+    }
 
-    //     for (int i = 0; i < count; i++) {
-    //         int year = random.nextInt(123) + 1900; // Random year between 1900 and 2022
-    //         int month = random.nextInt(12) + 1; // Random month between 1 and 12
-    //         int day = random.nextInt(28) + 1; // Random day between 1 and 28 (for simplicity, assuming all months have 28 days)
+    public static Map<AgeCat, Double> CheckAvgVaccinationInEachAgeCategory(LinkedList<Person> peopleList) {
+        Map<AgeCat, Double> AvgVacInEachAgeCat = 
+                peopleList.stream()
+                    .collect(Collectors.groupingBy(
+                                Person::getAgeCat,
+                                Collectors.averagingInt(Person::getVacCount)));
+        return AvgVacInEachAgeCat;
+    }
 
-    //         LocalDate dob = LocalDate.of(year, month, day);
-    //         String firstName = "FirstName" + i;
-    //         String lastName = "LastName" + i;
-    //         Person person = new Person(firstName, lastName, dob);
+    public static Double CheckAvgAgeOfUnvaccinatedPeople(LinkedList<Person> peopleList) {
+        Map<Boolean, Double> VacCountOfAll = 
+                peopleList.stream()
+                    .collect(Collectors.partitioningBy(
+                                p -> p.getVacCount() > 0,
+                                Collectors.averagingInt(
+                                    p -> Period.between(p.getDob(), LocalDate.now()).getYears())));
 
-    //         // Randomly assign 0 to 3 doses
-    //         int doseCount = random.nextInt(4);
-    //         for (int j = 0; j < doseCount; j++) {
-    //             String vacProductName = "Vaccine" + (j + 1);
-    //             String lotNumber = "Lot" + (j + 1);
-    //             LocalDate date = LocalDate.now().minusDays(random.nextInt(365)); // Random date within the last year
-    //             String vacSite = "Site" + (j + 1);
-    //             Dose dose = new Dose(vacProductName, lotNumber, date, vacSite);
-    //             person.addDose(dose);
-    //         }
-
-    //         people.add(person);
-    //     }
-
-    //     return people;
-    // }
+        return VacCountOfAll.get(false);
+    }
 
     private static LinkedList<Person> generateRandomPeople(int count) {
         LinkedList<Person> people = new LinkedList<>();
+        
         Random random = new Random();
-        String[] firstNames = {"Alice", "Bob", "Charlie", "David", "Emma", "Frank", "Grace", "Hannah"};
-        String[] lastNames = {"Smith", "Johnson", "Brown", "Davis", "Wilson", "Lee", "Garcia"};
 
         for (int i = 0; i < count; i++) {
-            String firstName = firstNames[random.nextInt(firstNames.length)];
-            String lastName = lastNames[random.nextInt(lastNames.length)];
-            LocalDate dob = LocalDate.of(1960 + random.nextInt(30), random.nextInt(12) + 1, random.nextInt(28) + 1);
-
+            String firstName = "FirstName_" + (i+1);
+            String lastName = "LastName_" + i+1;
+            LocalDate dob = LocalDate.now().minusYears(random.nextInt(125) + 1); // assign date from today to last 125 years
             LinkedList<Dose> doses = new LinkedList<>();
-            int numDoses = random.nextInt(5);
-            for (int j = 0; j < numDoses; j++) {
-                doses.add(new Dose("Vaccine" + j, "Lot" + j, LocalDate.now().minusDays(random.nextInt(365)), "Site" + j));
-            }
+            Person person = new Person(firstName, lastName, dob, doses);
 
-            Person person = new Person(firstName, lastName, dob);
+            int numDoses = random.nextInt(5);   // assign 0 to 4 doses randomly
+            for (int j = 0; j < numDoses; j++) {
+                String vacProductName = "Vaccine_" + (j + 1);
+                String lotNumber = "Lot_" + (j + 1);
+                LocalDate date = LocalDate.now().minusDays(random.nextInt(730)); // assign date of vaccinations randomly from last 2 years 
+                String vacSite = "Site_" + (j + 1);
+                Dose dose = new Dose(vacProductName, lotNumber, date, vacSite);
+                doses.add(dose);
+            }
             people.add(person);
         }
-
         return people;
     }
-
 }
-

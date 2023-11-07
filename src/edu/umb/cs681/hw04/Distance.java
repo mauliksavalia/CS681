@@ -1,7 +1,7 @@
 package edu.umb.cs681.hw04;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class Distance {
@@ -22,40 +22,17 @@ public class Distance {
 		// improvement by, for example, taking advantage of the symmetric nature
 		// of a distance matrix. But, let's not worry about that here.   
 		int numOfPoints = points.size();
-		List<List<Double>> distanceMatrix = initDistanceMatrix(numOfPoints);
-
-			IntStream
-				.range(0, numOfPoints)
-				.forEach(i -> {
-					IntStream
-						.range(i+1, numOfPoints)
-						.forEach (j-> {
-							double distance = metric.distance(points.get(i), points.get(j));
-							distanceMatrix.get(i).set(j, distance);
-							distanceMatrix.get(j).set(i, distance);
-						});
-					// List<Double> current = points.get(i);
-					// for (int j = i + 1; j < numOfPoints; j++) {
-					// 	List<Double> peer = points.get(j);
-					// 	double distance = metric.distance(current, peer);
-
-					// 	// Set the distance in both the (i, j) and (j, i) positions
-					// 	distanceMatrix.get(i).set(j, distance);
-					// 	distanceMatrix.get(j).set(i, distance);
-					// }
-				});
-
-		return distanceMatrix;
-	}
-
-	private static List<List<Double>> initDistanceMatrix(int numOfPoints) {
-		List<List<Double>> distanceMatrix = new ArrayList<>(numOfPoints);
-		for(int i = 0; i < numOfPoints; i++) {
-			Double[] vector = new Double[numOfPoints];
-			Arrays.fill(vector, 0.0);
-			distanceMatrix.add(Arrays.asList(vector));
-		}
-		return distanceMatrix;
+	
+			return IntStream
+					.range(0, numOfPoints)
+					.mapToObj(i -> 
+						IntStream
+							.range(0, numOfPoints)
+							.mapToObj(j -> 
+								metric.distance(points.get(i), points.get(j)))
+					)
+					.map(distances -> distances.collect(Collectors.toList()))
+					.collect(Collectors.toList());
 	}
 
 	public static void main(String[] args) {
@@ -64,8 +41,9 @@ public class Distance {
 
         List<List<Double>> points = generateRandomPoints(numPoints, numDimensions);
 
-		System.out.println("");
-
+		System.out.println("Total number of Points: 1500");
+		System.out.println("Total number of Dimensions: 150\n");
+	
         List<List<Double>> euclidean_Distance = Distance.matrix(points, new Euclidean());
         double euclidean_result = euclidean_Distance.get(0).get(1);
 		System.out.println("Euclidean Distance: " + euclidean_result);
@@ -77,7 +55,6 @@ public class Distance {
 		List<List<Double>> cosine_Distance = Distance.matrix(points, new Cosine());
 		double cosine_result = cosine_Distance.get(0).get(1);
 		System.out.println("Cosine Distance: " + cosine_result);
-
 
     }
 

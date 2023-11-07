@@ -19,32 +19,15 @@ public class Dose {
     return vacProductName;
   }
 
-  public void setVacProductName(String vacProductName) {
-    this.vacProductName = vacProductName;
-  }
-
   public String getLotNumber() {
     return lotNumber;
-  }
-
-  public void setLotNumber(String lotNumber) {
-    this.lotNumber = lotNumber;
   }
 
   public LocalDate getDate() {
     return date;
   }
 
-  public void setDate(LocalDate date) {
-    this.date = date; 
-  }
-
   public String getVacSite() {
     return vacSite;
   }
-
-  public void setVacSite(String vacSite) {
-    this.vacSite = vacSite;
-  }
-
 }

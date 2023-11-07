@@ -39,15 +39,16 @@ public class Car {
 		return dominationCount;
 	}
 
-	public void setDominationCount(ArrayList<Car> usedCarsData) {
-	for (int i = 0; i < usedCarsData.size(); i++) {
+	public void setDominationCount(ArrayList<Car> CarsData) {
+	for (int i = 0; i < CarsData.size(); i++) {
 
-		if ((this.mileage <= usedCarsData.get(i).mileage) && (this.price <= usedCarsData.get(i).price)
-				&& (this.year >= usedCarsData.get(i).year)) {
+		if ((this.mileage <= CarsData.get(i).mileage) 
+				&& (this.price <= CarsData.get(i).price)
+				&& (this.year >= CarsData.get(i).year)) {
 
-			if ((this.mileage < usedCarsData.get(i).mileage)
-					|| (this.price < usedCarsData.get(i).price)
-					|| (this.year > usedCarsData.get(i).year)) {
+			if ((this.mileage < CarsData.get(i).mileage)
+					|| (this.price < CarsData.get(i).price)
+					|| (this.year > CarsData.get(i).year)) {
 				this.dominationCount++;
 				}
 			}
@@ -58,14 +59,16 @@ public class Car {
 
 		ArrayList<Car> CarsData = new ArrayList<>();
 
-		CarsData.add(new Car("RAV4", "Toyota", 35000, 2018, 30000));
+		CarsData.add(new Car("RAV4", "Toyota", 5000, 2018, 30000));
 		CarsData.add(new Car("Harrier", "TATA", 55000, 2023, 45000));
-		CarsData.add(new Car("XUV700", "Mahindra", 30000, 2019, 80000));
+		CarsData.add(new Car("XUV700", "Mahindra", 30000, 2021, 80000));
 		CarsData.add(new Car("M5", "BMW", 15000, 2022, 68000));
         CarsData.add(new Car("GWeagon", "Mercedes", 25000, 2014, 95000));
         CarsData.add(new Car("Seltos", "Kia", 60000, 2019, 40000));
 
-		double averagePriceOfCars = CarsData.stream()
+		
+		double averagePriceOfCars 
+			= CarsData.stream()
 				.map(Car::getPrice)
 				.reduce	(new CarPriceResultHolder(), 
 						(result, price) -> {

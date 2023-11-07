@@ -47,7 +47,8 @@ public class Car {
 	public void setDominationCount(ArrayList<Car> CarsData) {
 	for (int i = 0; i < CarsData.size(); i++) {
 
-		if ((this.mileage <= CarsData.get(i).mileage) && (this.price <= CarsData.get(i).price)
+		if ((this.mileage <= CarsData.get(i).mileage) 
+				&& (this.price <= CarsData.get(i).price)
 				&& (this.year >= CarsData.get(i).year)) {
 
 			if ((this.mileage < CarsData.get(i).mileage)
@@ -63,7 +64,7 @@ public class Car {
 
 		ArrayList<Car> CarsData = new ArrayList<>();
 
-		CarsData.add(new Car("RAV4", "Toyota", 35000, 2018, 30000));
+		CarsData.add(new Car("RAV4", "Toyota", 5000, 2018, 30000));
 		CarsData.add(new Car("Harrier", "TATA", 55000, 2023, 45000));
 		CarsData.add(new Car("XUV700", "Mahindra", 30000, 2021, 80000));
 		CarsData.add(new Car("M5", "BMW", 15000, 2022, 68000));
@@ -77,9 +78,11 @@ public class Car {
 		System.out.println("");
 		System.out.println("LOW Group of Price Comparator (Price < 60000):");
 		System.out.println("");
-		Map<Boolean, List<Car>> PriceCategory = CarsData.stream()
-					.sorted(Comparator.comparing(Car::getPrice)).collect(
-					Collectors.partitioningBy((Car car) -> car.getPrice() < 60000.0F));
+		Map<Boolean, List<Car>> PriceCategory = 
+				CarsData.stream()
+					.sorted(Comparator.comparing(Car::getPrice))
+					.collect(Collectors.partitioningBy(
+								(Car car) -> car.getPrice() < 60000.0F));
 
 		double averageOfLowPrice = PriceCategory.get(true).stream().mapToDouble(Car::getPrice).average().orElse(Double.NaN);
 		double highestOfLowPrice = PriceCategory.get(true).stream().mapToDouble(Car::getPrice).max().orElse(Double.NaN);
@@ -114,9 +117,11 @@ public class Car {
 		System.out.println("LOW Group of Year Comparator (Year < 2020):");
 		System.out.println("");
 
-		Map<Boolean, List<Car>> YearCategory = CarsData.stream()
-					.sorted(Comparator.comparing(Car::getYear)).collect(
-					Collectors.partitioningBy((Car car) -> car.getYear() < 2020));
+		Map<Boolean, List<Car>> YearCategory = 
+				CarsData.stream()
+					.sorted(Comparator.comparing(Car::getYear))
+					.collect(Collectors.partitioningBy(
+								(Car car) -> car.getYear() < 2020));
 
 		int averageOfLowYear = (int) YearCategory.get(true).stream().mapToDouble(Car::getYear).average().orElse(Double.NaN);
 		int highestOfLowYear = (int) YearCategory.get(true).stream().mapToDouble(Car::getYear).max().orElse(Double.NaN);
@@ -152,9 +157,11 @@ public class Car {
 		System.out.println("LOW Group of Mileage Comparator (Mileage < 30000):");
 		System.out.println("");
 
-		Map<Boolean, List<Car>> MileageCategory = CarsData.stream()
-					.sorted(Comparator.comparing(Car::getMileage)).collect(
-					Collectors.partitioningBy((Car car) -> car.getMileage() < 30000.0F));
+		Map<Boolean, List<Car>> MileageCategory = 
+				CarsData.stream()
+					.sorted(Comparator.comparing(Car::getMileage))
+					.collect(Collectors.partitioningBy(
+								(Car car) -> car.getMileage() < 30000.0F));
 
 		double averageOfLowMileage = MileageCategory.get(true).stream().mapToDouble(Car::getMileage).average().orElse(Double.NaN);
 		double highestOfLowMileage = MileageCategory.get(true).stream().mapToDouble(Car::getMileage).max().orElse(Double.NaN);
@@ -193,9 +200,11 @@ public class Car {
 			car.setDominationCount(CarsData);
 		}
 
-		Map<Boolean, List<Car>> DominationCountCategory = CarsData.stream()
-					.sorted(Comparator.comparing(Car::getDominationCount)).collect(
-					Collectors.partitioningBy((Car car) -> car.getDominationCount() < 1));
+		Map<Boolean, List<Car>> DominationCountCategory = 
+				CarsData.stream()
+					.sorted(Comparator.comparing(Car::getDominationCount))
+					.collect(Collectors.partitioningBy(
+								(Car car) -> car.getDominationCount() < 0.5));
 
 		double averageOfLowDominationCount = DominationCountCategory.get(true).stream().mapToDouble(Car::getDominationCount).average().orElse(Double.NaN);
 		double highestOfLowDominationCount = DominationCountCategory.get(true).stream().mapToDouble(Car::getDominationCount).max().orElse(Double.NaN);
