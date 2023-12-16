@@ -1,0 +1,31 @@
+<project name="Seat Booking System" basedir="." default="run">
+    <property environment="env"/>
+
+    <property name="src" location="src"/>
+    <property name="bin" location="bin"/>
+
+    <path id="classpath">
+        <pathelement location="bin"/>
+    </path>
+
+    <target name="init">
+        <mkdir dir="${bin}"/>
+    </target>
+
+    <target name="compile" depends="init">
+        <javac srcdir="${src}" destdir="${bin}" includeAntRuntime="no">
+            <classpath refid="classpath"/>
+            <include name="edu/umb/cs681/hw13/*.java"/>
+        </javac>
+    </target>
+
+    <target name="run" depends="clean, compile">
+        <java classname="edu.umb.cs681.hw13.SimpleSeatBookingSystem" classpathref="classpath" fork="true"/>
+        <java classname="edu.umb.cs681.hw13.SafeSeatBookingSystem" classpathref="classpath" fork="true"/>
+    </target>
+
+    <target name="clean">
+        <delete dir="${bin}"/>
+    </target>
+
+</project>
