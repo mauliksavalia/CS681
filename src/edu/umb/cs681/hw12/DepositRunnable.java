@@ -1,31 +1,28 @@
 package edu.umb.cs681.hw12;
 
-import java.util.concurrent.atomic.AtomicBoolean;
-
 public class DepositRunnable implements Runnable {
     private ThreadSafeBankAccount2 account;
-    private AtomicBoolean done = new AtomicBoolean(false);
+    private volatile boolean done = false;
 
     public DepositRunnable(ThreadSafeBankAccount2 account) {
         this.account = account;
     }
 
     public void setDone() {
-        done.set(true);
+        done = true;
     }
 
     public void run() {
-        for(int i = 0; i < 10; i++) { // Assuming 10 iterations
-            if(done.get()) {
+        for(int i = 0; i < 12; i++) {
+            if(done) {
                 break;
             }
-            account.deposit(100); 
+            account.deposit(150); 
             try {
-                Thread.sleep(100); 
+                Thread.sleep(1000); 
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                continue;
             }
         }
     }
 }
-

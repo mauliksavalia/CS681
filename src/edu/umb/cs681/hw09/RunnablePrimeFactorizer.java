@@ -58,7 +58,7 @@ public class RunnablePrimeFactorizer extends PrimeFactorizer implements Runnable
 		System.out.println("Factorization of 36");
 		RunnablePrimeFactorizer runnable = new RunnablePrimeFactorizer(36, 2, (long)Math.sqrt(36));
 		Thread thread = new Thread(runnable);
-		System.out.println("Thread #" + thread.getId() + 
+		System.out.println("Thread #" + thread.threadId() + 
 			" performs factorization in the range of " + runnable.getFrom() + "->" + runnable.getTo());
 		thread.start();
 		try {
@@ -78,12 +78,12 @@ public class RunnablePrimeFactorizer extends PrimeFactorizer implements Runnable
 		
 		thread = new Thread(runnables.get(0));
 		threads.add(thread);
-		System.out.println("Thread #" + thread.getId() + 
+		System.out.println("Thread #" + thread.threadId() + 
 			" performs factorization in the range of " + runnables.get(0).getFrom() + "->" + runnables.get(0).getTo());
 		
 		thread = new Thread(runnables.get(1));
 		threads.add(thread);
-		System.out.println("Thread #" + thread.getId() + 
+		System.out.println("Thread #" + thread.threadId() + 
 			" performs factorization in the range of " + runnables.get(1).getFrom() + "->" + runnables.get(1).getTo());
 		
 		threads.forEach( (t)->t.start() );
@@ -104,12 +104,12 @@ public class RunnablePrimeFactorizer extends PrimeFactorizer implements Runnable
 		
 		thread = new Thread(runnables.get(0));
 		threads.add(thread);
-		System.out.println("Thread #" + thread.getId() + 
+		System.out.println("Thread #" + thread.threadId() + 
 			" performs factorization in the range of " + runnables.get(0).getFrom() + "->" + runnables.get(0).getTo());
 		
 		thread = new Thread(runnables.get(1));
 		threads.add(thread);
-		System.out.println("Thread #" + thread.getId() + 
+		System.out.println("Thread #" + thread.threadId() + 
 			" performs factorization in the range of " + runnables.get(1).getFrom() + "->" + runnables.get(1).getTo());
 		
 		threads.forEach( (t)->t.start() );

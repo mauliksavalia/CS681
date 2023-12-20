@@ -40,6 +40,11 @@ public class RunnableCancellablePrimeGenerator extends RunnablePrimeGenerator {
 		RunnableCancellablePrimeGenerator gen = new RunnableCancellablePrimeGenerator(1,100);
 		Thread thread = new Thread(gen);
 		thread.start();
+		try {
+			Thread.sleep(1000);  
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 		gen.setDone();
 		try {
 			thread.join();

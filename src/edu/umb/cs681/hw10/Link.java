@@ -14,7 +14,7 @@ public class Link extends FSElement {
         lock.lock();
         try {
             return target;
-        } finally {
+        }finally{
             lock.unlock();
         }
     }

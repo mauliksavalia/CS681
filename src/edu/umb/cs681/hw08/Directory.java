@@ -4,12 +4,16 @@ import java.time.LocalDateTime;
 import java.util.LinkedList;
 
 public class Directory extends FSElement {
-    LinkedList<FSElement> children = new LinkedList<>();
+    LinkedList<FSElement> children;
 
     public Directory(Directory parent, String name, LocalDateTime creationTime) {
         super(parent, name, 0, creationTime);
+        if (parent != null){
+            parent.appendChild(parent);
+        }
+        this.children = new LinkedList<FSElement>();
     }
-
+    
 	public boolean isDirectory() {
 		return true;
 	}
@@ -19,11 +23,11 @@ public class Directory extends FSElement {
     }
 
     public int countChildren() {
-        return children.size();
+        return this.children.size();
     }
 
     public LinkedList<FSElement> getChildren() {
-        return children;
+        return this.children;
     }
 
     public LinkedList<Directory> getSubDirectories() {
@@ -35,7 +39,6 @@ public class Directory extends FSElement {
                 subDir.add((Directory) children.get(j));
             }
         }
-
         return subDir;
     }
 
@@ -48,7 +51,6 @@ public class Directory extends FSElement {
                 files.add((File) children.get(j));
             }
         }
-
         return files;
     }
 
@@ -64,7 +66,6 @@ public class Directory extends FSElement {
                 tSize += dir.getTotalSize();
             }
         }
-
         return tSize;
     }
 

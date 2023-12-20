@@ -66,28 +66,33 @@ public class ThreadSafeBankAccount2 implements BankAccount{
 		DepositRunnable depositTask = new DepositRunnable(bankAccount);
 		WithdrawRunnable withdrawTask = new WithdrawRunnable(bankAccount);
 		
-		Thread[] depositThreads = new Thread[5];
-		Thread[] withdrawThreads = new Thread[5];
+		Thread[] dtask = new Thread[5];
+		Thread[] wtask = new Thread[5];
 	
 		for(int i = 0; i < 5; i++){
-			depositThreads[i] = new Thread(depositTask);
-			withdrawThreads[i] = new Thread(withdrawTask);
-			depositThreads[i].start();
-			withdrawThreads[i].start();
+			dtask[i] = new Thread(depositTask);
+			wtask[i] = new Thread(withdrawTask);
+			dtask[i].start();
+			wtask[i].start();
 		}
-
+	
 		try {
 			Thread.sleep(1000); 
 			depositTask.setDone();
 			withdrawTask.setDone();
+			
+			for (int i = 0; i < 5; i++) {
+				dtask[i].interrupt();
+				wtask[i].interrupt();
+			}
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 	
 		for(int i = 0; i < 5; i++){
 			try {
-				depositThreads[i].join();
-				withdrawThreads[i].join();
+				dtask[i].join();
+				wtask[i].join();
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}

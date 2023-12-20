@@ -25,7 +25,16 @@ public abstract class FSElement {
         lock.lock();
         try {
             return parent;
-        } finally {
+        }finally{
+            lock.unlock();
+        }
+    }
+
+    public void setParent(Directory parent) {
+        lock.lock();
+        try{
+            this.parent = parent;
+        }finally{
             lock.unlock();
         }
     }
@@ -34,16 +43,34 @@ public abstract class FSElement {
         lock.lock();
         try {
             return this.size;
-        } finally {
+        }finally{
             lock.unlock();
         }
+    }
+
+    public void setSize(int size) {
+        lock.lock();
+        try{
+            this.size = size;
+        }finally{
+            lock.unlock();
+        }  
     }
 
     public String getName() {
         lock.lock();
         try {
             return name;
-        } finally {
+        }finally{
+            lock.unlock();
+        }
+    }
+
+    public void setName(String name) {
+        lock.lock();
+        try{
+            this.name = name;
+        }finally{
             lock.unlock();
         }
     }
@@ -54,7 +81,16 @@ public abstract class FSElement {
         lock.lock();
         try {
             return creationTime;
-        } finally {
+        }finally{
+            lock.unlock();
+        }
+    }
+
+    public void setCreationTime(LocalDateTime creationtime) {
+        lock.lock();
+        try{
+            this.creationTime = creationtime;
+        }finally{
             lock.unlock();
         }
     }

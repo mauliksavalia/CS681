@@ -18,7 +18,6 @@ public class RunnableCancellablePrimeFactorizer extends RunnablePrimeFactorizer 
         }
     }
 
-    @Override
     public void generatePrimeFactors() {
         long divisor = from;
         while(dividend != 1 && divisor <= to) {
@@ -29,28 +28,21 @@ public class RunnableCancellablePrimeFactorizer extends RunnablePrimeFactorizer 
                     this.factors.clear();
                     break;
                 }
-            
+        
             if(divisor > 2 && isEven(divisor)) {
                 divisor++;
                 continue;
             }
-
             if(dividend % divisor == 0) {
                 factors.add(divisor);
                 dividend /= divisor;
-            } else {
+            }else { 
                 if(divisor == 2) divisor++;
-                else divisor += 2;
-            }
+                else divisor += 2; }
             }finally{
                 lock.unlock();
             }
         }
     }
-
-    @Override
-    public void run() {
-        generatePrimeFactors();
-        System.out.println("Thread #" + Thread.currentThread().threadId() + " generated " + factors);
-    }
 }
+
