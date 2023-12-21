@@ -14,7 +14,6 @@ public class SafeSeatBookingSystemRunnable implements Runnable {
         done = true;
     }
 
-    @Override
     public void run() {
         while(true) {
             if(done) {
