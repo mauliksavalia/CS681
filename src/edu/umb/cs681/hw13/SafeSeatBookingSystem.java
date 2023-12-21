@@ -13,18 +13,13 @@ public class SafeSeatBookingSystem {
     public String seatBooking(int seatNumber) {
         lock.lock();
         try {
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
             if (!bookedSeats[seatNumber]) {
                 bookedSeats[seatNumber] = true;
                 return "Seat " + seatNumber + " reserved successfully.";
             } else {
                 return "Seat is already reserved.";
             }
-        }finally{
+        } finally {
             lock.unlock();
         }
     }
@@ -43,13 +38,16 @@ public class SafeSeatBookingSystem {
         thread2.start();
 
         try {
-            Thread.sleep(100); 
+            Thread.sleep(100);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
         runnable1.setDone();
         runnable2.setDone();
+
+        thread1.interrupt();
+        thread2.interrupt();
 
         try {
             thread1.join();
@@ -59,6 +57,3 @@ public class SafeSeatBookingSystem {
         }
     }
 }
-
-
-

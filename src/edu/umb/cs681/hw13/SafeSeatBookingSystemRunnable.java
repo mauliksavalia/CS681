@@ -14,9 +14,10 @@ public class SafeSeatBookingSystemRunnable implements Runnable {
         done = true;
     }
 
+    @Override
     public void run() {
         while(true) {
-            if(done){
+            if(done) {
                 break;
             }
             String answer = bookingSystem.seatBooking(seatNumber);
@@ -24,7 +25,7 @@ public class SafeSeatBookingSystemRunnable implements Runnable {
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                break; 
             }
         }
     }
