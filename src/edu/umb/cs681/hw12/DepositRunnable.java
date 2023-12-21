@@ -17,7 +17,7 @@ public class DepositRunnable implements Runnable {
             if(done) {
                 break;
             }
-            account.deposit(150); 
+            account.deposit(100); 
             try {
                 Thread.sleep(1000); 
             } catch (InterruptedException e) {
